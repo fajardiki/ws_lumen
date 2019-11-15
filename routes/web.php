@@ -19,4 +19,7 @@ $router->get('/key', function(){
     return str_random(32);
 });
 
-$router->get('/select', 'SelectDataController@index');
+$router->get('/authsession', 'SelectDataController@authsession');
+$router->get('/authtenant', 'SelectDataController@authtenant');
+$router->get('/bridgelog', 'SelectDataController@bridgelog');
+$router->get('/bridgesession', 'SelectDataController@bridgesession');
