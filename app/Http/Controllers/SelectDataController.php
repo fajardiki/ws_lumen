@@ -24,6 +24,7 @@ class SelectDataController extends Controller {
 	}
 
 	public function bridgelog()	{
+		ini_set('memory_limit','-1');
 		$bridgelog = BridgeLogModel::limit(100000)->get();
 		return response()->json([
 			'Bridge_Log' => $bridgelog
@@ -37,4 +38,6 @@ class SelectDataController extends Controller {
 			]);
 		}
 }
+
+// php -S localhost:6060 -t public
 ?>
