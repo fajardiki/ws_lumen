@@ -24,7 +24,7 @@ class SelectDataController extends Controller {
 	}
 
 	public function bridgelog()	{
-		$bridgelog = BridgeLogModel::all();
+		$bridgelog = BridgeLogModel::limit(100000)->get();
 		return response()->json([
 			'Bridge_Log' => $bridgelog
 		]);
