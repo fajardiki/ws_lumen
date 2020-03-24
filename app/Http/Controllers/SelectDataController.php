@@ -33,18 +33,15 @@ class SelectDataController extends Controller {
 	}
 
 	// SELECT DATA
-	public function bridgelog()	{
+	public function bridgelog($limit)	{
 
 		$time_start = microtime(true);
 		
-		$bridgelog = BridgeLogModel::limit(1000)->get();
+		$bridgelog = BridgeLogModel::limit($limit)->get();
 		// $bridgelog = BridgeLogModel::all();
 
 		$time_end = microtime(true);
-
 		$execution_time = $time_end - $time_start;
-
-		$result = number_format($execution_time,3);
 
 		return response()->json([
 			'Bridge_Log' => $bridgelog,
@@ -59,45 +56,19 @@ class SelectDataController extends Controller {
 		$search = BridgeLogModel::where('msisdn',$cari)->get();
 
 		$time_end = microtime(true);
-
 		$execution_time = $time_end - $time_start;
 
-		$result = number_format($execution_time,3);
-
 		return response()->json([
-			'Bridge_Session' => $search,
+			'Bridge_Log' => $search,
 			'Time' => $execution_time
 		]);
 	}
 
 	// UPDATE DATA
 	public function update(Request $request) {
-		$id = $request->input('id');
+		$time_start = microtime(true);
 
-		$msisdn = $request->input('msisdn');
-		$called = $request->input('called');
-		$lat = $request->input('lat');
-		$lng = $request->input('lng');
-		$area = $request->input('area');
-		$ts = $request->input('ts');
-		$tenant = $request->input('tenant');
-
-		$update = BridgeLogModel::where('id', $id)->update(['msisdn'=>$msisdn, 'called'=>$called, 'lat'=>$lat, 'lng'=>$lng, 'area'=>$area, 'ts'=>$ts, 'tenant'=>$tenant]);
-
-		if ($update) {
-			return response()->json([
-				'message' => 'Updated Success'
-			]);
-		} else {
-			return response()->json([
-				'message' => 'Updated Failed'
-			]);
-		}
-	}
-
-	// INSERT DATA
-	public function insert(Request $request) {
-
+		$jmlupdate = $request->input('jumlahupdate');
 		$msisdn = $request->input('msisdn');
 		$called = $request->input('called');
 		$lat = $request->input('lat');
@@ -108,17 +79,64 @@ class SelectDataController extends Controller {
 
 		$id = BridgeLogModel::max('id');
 
-		$lastid = $id+1;
+		$lastid = $id;
+		$maxulang = $lastid-$jmlupdate;
 
-		$insert = BridgeLogModel::insert(['id'=>$lastid, 'msisdn'=>$msisdn, 'called'=>$called, 'lat'=>$lat, 'lng'=>$lng, 'area'=>$area, 'ts'=>$ts, 'tenant'=>$tenant]);
+		for ($i=$lastid; $i > $maxulang; $i--) {
+			$update = BridgeLogModel::where('id', $i)->update(['msisdn'=>$msisdn, 'called'=>$called, 'lat'=>$lat, 'lng'=>$lng, 'area'=>$area, 'ts'=>$ts, 'tenant'=>$tenant]);
+		}
 
-		if ($insert) {
+		$time_end = microtime(true);
+		$execution_time = $time_end - $time_start;
+
+		if ($update) {
 			return response()->json([
-				'message' => 'Updated Success'
+				'message' => 'Updated Success',
+				'time' => $execution_time
 			]);
 		} else {
 			return response()->json([
-				'message' => 'Updated Failed'
+				'message' => 'Updated Failed',
+				'time' => $execution_time
+			]);
+		}
+	}
+
+	// INSERT DATA
+	public function insert(Request $request) {
+
+		$time_start = microtime(true);
+
+		$msisdn = $request->input('msisdn');
+		$called = $request->input('called');
+		$lat = $request->input('lat');
+		$lng = $request->input('lng');
+		$area = $request->input('area');
+		$ts = $request->input('ts');
+		$tenant = $request->input('tenant');
+		$jmlinput = (int)$request->input('jumlahinsert');
+
+		$id = BridgeLogModel::max('id');
+
+		$lastid = $id+1;
+		$maxulang = $lastid+$jmlinput;
+
+		for ($i=$lastid; $i < $maxulang; $i++) { 
+			$insert = BridgeLogModel::insert(['id'=>$i, 'msisdn'=>$msisdn, 'called'=>$called, 'lat'=>$lat, 'lng'=>$lng, 'area'=>$area, 'ts'=>$ts, 'tenant'=>$tenant]);
+		}
+
+		$time_end = microtime(true);
+		$execution_time = $time_end - $time_start;
+
+		if ($insert) {
+			return response()->json([
+				'message' => 'Updated Success',
+				'time' => $execution_time
+			]);
+		} else {
+			return response()->json([
+				'message' => 'Updated Failed',
+				'time' => $execution_time
 			]);
 		}
 
@@ -126,17 +144,30 @@ class SelectDataController extends Controller {
 	}
 
 	// DELETE DATA
-	public function delete($id) {
+	public function delete($jmldel) {
+		$time_start = microtime(true);
+		$id = BridgeLogModel::max('id');
+		$jml = (int)$jmldel;
 
-		$delete = BridgeLogModel::where('id',$id)->delete();
+		$lastid = $id;
+		$maxulang = $lastid-$jml;
+
+		for ($i=$lastid; $i > $maxulang; $i--) { 
+			$delete = BridgeLogModel::where('id',$i)->delete();
+		}
+
+		$time_end = microtime(true);
+		$execution_time = $time_end - $time_start;	
 
 		if ($delete) {
 			return response()->json([
-				'message' => 'Delete Success'
+				'message' => 'Delete Success',
+				'time' => $execution_time
 			]);
 		} else {
 			return response()->json([
-				'message' => 'Delete Failed'
+				'message' => 'Delete Failed',
+				'time' => $execution_time
 			]);
 		}
 	}

@@ -19,8 +19,8 @@ $router->get('/key', function(){
     return str_random(32);
 });
 
-$router->get('/bridgelog', 'SelectDataController@bridgelog');
+$router->get('/bridgelog/{limit}', 'SelectDataController@bridgelog');
 $router->get('/searchlumen/{cari}', 'SelectDataController@search');
 $router->post('/updatelumen', 'SelectDataController@update');
 $router->post('/insertlumen', 'SelectDataController@insert');
-$router->get('/deletelumen/{id}', 'SelectDataController@delete');
+$router->get('/deletelumen/{jmldel}', 'SelectDataController@delete');
