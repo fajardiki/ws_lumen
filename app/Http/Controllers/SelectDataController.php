@@ -45,7 +45,7 @@ class SelectDataController extends Controller {
 
 		return response()->json([
 			'Bridge_Log' => $bridgelog,
-			'Time' => $execution_time
+			'time' => $execution_time
 		]);
 	}
 	
@@ -60,7 +60,7 @@ class SelectDataController extends Controller {
 
 		return response()->json([
 			'Bridge_Log' => $search,
-			'Time' => $execution_time
+			'time' => $execution_time
 		]);
 	}
 
