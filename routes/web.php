@@ -21,6 +21,6 @@ $router->get('/key', function(){
 
 $router->get('/bridgelog/{limit}', 'SelectDataController@bridgelog');
 $router->get('/searchlumen/{cari}', 'SelectDataController@search');
-$router->post('/updatelumen', 'SelectDataController@update');
+$router->put('/updatelumen/', 'SelectDataController@update');
 $router->post('/insertlumen', 'SelectDataController@insert');
-$router->get('/deletelumen/{jmldel}', 'SelectDataController@delete');
+$router->delete('/deletelumen/{jmldel}', 'SelectDataController@delete');
