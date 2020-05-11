@@ -11,62 +11,57 @@ use Illuminate\Http\Request;
 
 class SelectDataController extends Controller {
 	
-	public function authsession() {
-		$authses = AuthSesModel::all();
-		return response()->json([
-			'Auth_Session' => $authses
-		]);
-	}
-
-	public function authtenant() {
-		$authten = AuthTenModel::all();
-		return response()->json([
-			'Auth_Tenant' => $authten
-		]);
-	}
-
-	public function bridgesession()	{
-		$bridgeses = BridgeSesModel::all();
-		return response()->json([
-			'Bridge_Session' => $bridgeses
-		]);
-	}
 
 	// SELECT DATA
 	public function bridgelog($limit)	{
 
-		$time_start = microtime(true);
-		
-		$bridgelog = BridgeLogModel::limit($limit)->get();
-		// $bridgelog = BridgeLogModel::all();
+		$this->startTimer();
 
-		$time_end = microtime(true);
-		$execution_time = $time_end - $time_start;
+		for ($i=1; $i <= $limit ; $i++) { 
+			$bridgelog = BridgeLogModel::where('id',$i)->get();
+
+			foreach ($bridgelog as $dtat) {
+				$item[] = array(
+					"id"=>$dtat->id,
+					"msisdn"=>$dtat->msisdn,
+					"called"=>$dtat->called,
+					"lat"=>$dtat->lat,
+					"lng"=>$dtat->lng,
+					"area"=>$dtat->area,
+					"ts"=>$dtat->ts,
+					"tenant"=>$dtat->tenant
+				);
+			}
+		}
 
 		return response()->json([
-			'Bridge_Log' => $bridgelog,
-			'time' => $execution_time
+			'result'=>'succes',
+			'Bridge_Log'=>$item,
+			'request'=>$i,
+			'time'=>$this->endTimer()." Second",
+			'memory'=>$this->memory().' MB',
+			'cpu'=>$this->get_cpu_usage()."%"	
 		]);
 	}
 	
 	// SEARCH DATA
 	public function search($cari) {
-		$time_start = microtime(true);
+		$this->startTimer();
 
 		$search = BridgeLogModel::where('msisdn',$cari)->get();
 
-		$time_end = microtime(true);
-		$execution_time = $time_end - $time_start;
-
 		return response()->json([
-			'Bridge_Log' => $search,
-			'time' => $execution_time
+			'result'=>'succes',
+			'Bridge_Log'=>$search,
+			'time'=>$this->endTimer()." Second",
+			'memory'=>$this->memory().' MB',
+			'cpu'=>$this->get_cpu_usage()."%"
 		]);
 	}
 
 	// UPDATE DATA
 	public function update(Request $request) {
-		$time_start = microtime(true);
+		$this->startTimer();
 
 		$jmlupdate = $request->input('jumlahupdate');
 		$msisdn = $request->input('msisdn');
@@ -86,13 +81,13 @@ class SelectDataController extends Controller {
 			$update = BridgeLogModel::where('id', $i)->update(['msisdn'=>$msisdn, 'called'=>$called, 'lat'=>$lat, 'lng'=>$lng, 'area'=>$area, 'ts'=>$ts, 'tenant'=>$tenant]);
 		}
 
-		$time_end = microtime(true);
-		$execution_time = $time_end - $time_start;
-
 		if ($update) {
 			return response()->json([
-				'message' => 'Updated Success',
-				'time' => $execution_time
+				'result'=>'succes',
+				'request'=>$i,
+				'time'=>$this->endTimer()." Second",
+				'memory'=>$this->memory().' MB',
+				'cpu'=>$this->get_cpu_usage()."%"
 			]);
 		} else {
 			return response()->json([
@@ -105,7 +100,7 @@ class SelectDataController extends Controller {
 	// INSERT DATA
 	public function insert(Request $request) {
 
-		$time_start = microtime(true);
+		$this->startTimer();
 
 		$msisdn = $request->input('msisdn');
 		$called = $request->input('called');
@@ -125,13 +120,13 @@ class SelectDataController extends Controller {
 			$insert = BridgeLogModel::insert(['id'=>$i, 'msisdn'=>$msisdn, 'called'=>$called, 'lat'=>$lat, 'lng'=>$lng, 'area'=>$area, 'ts'=>$ts, 'tenant'=>$tenant]);
 		}
 
-		$time_end = microtime(true);
-		$execution_time = $time_end - $time_start;
-
 		if ($insert) {
 			return response()->json([
-				'message' => 'Updated Success',
-				'time' => $execution_time
+				'result'=>'succes',
+				'request'=>$i,
+				'time'=>$this->endTimer()." Second",
+				'memory'=>$this->memory().' MB',
+				'cpu'=>$this->get_cpu_usage()."%"
 			]);
 		} else {
 			return response()->json([
@@ -145,7 +140,8 @@ class SelectDataController extends Controller {
 
 	// DELETE DATA
 	public function delete($jmldel) {
-		$time_start = microtime(true);
+		$this->startTimer();
+
 		$id = BridgeLogModel::max('id');
 		$jml = (int)$jmldel;
 
@@ -156,13 +152,13 @@ class SelectDataController extends Controller {
 			$delete = BridgeLogModel::where('id',$i)->delete();
 		}
 
-		$time_end = microtime(true);
-		$execution_time = $time_end - $time_start;	
-
 		if ($delete) {
 			return response()->json([
-				'message' => 'Delete Success',
-				'time' => $execution_time
+				'result'=>'succes',
+				'request'=>$i,
+				'time'=>$this->endTimer()." Second",
+				'memory'=>$this->memory().' MB',
+				'cpu'=>$this->get_cpu_usage()."%"
 			]);
 		} else {
 			return response()->json([
@@ -171,6 +167,42 @@ class SelectDataController extends Controller {
 			]);
 		}
 	}
+
+	function startTimer() {
+        global $starttime;
+        $mtime = microtime();
+        $mtime = explode(' ', $mtime);
+        $mtime = $mtime[1] + $mtime[0];
+        $starttime = $mtime;
+    }
+    
+    
+    function endTimer() {
+        global $starttime;
+        $mtime = microtime();
+        $mtime = explode(' ', $mtime);
+        $mtime = $mtime[1] + $mtime[0];
+        $endtime = $mtime;
+        $totaltime = round(($endtime - $starttime), 4);
+        return $totaltime;
+	}
+
+	function memory() {
+        return round(memory_get_usage()/1048576,2);
+    }
+	
+	function get_cpu_usage() {
+        $cmd = "wmic cpu get loadpercentage";
+        exec($cmd, $output, $value);
+
+        if ($value==0) {
+            return $output[1];
+        } else {
+            return "Cannot Get CPU Usage!";
+        }
+	}
+	
+
 }
 
 // php -S localhost:6060 -t public
