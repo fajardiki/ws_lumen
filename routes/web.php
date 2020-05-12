@@ -19,7 +19,7 @@ $router->get('/key', function(){
     return str_random(32);
 });
 
-$router->get('/bridgelog/{limit}', 'SelectDataController@bridgelog');
+$router->get('/selectlumen/{limit}', 'SelectDataController@select');
 $router->get('/searchlumen/{cari}', 'SelectDataController@search');
 $router->put('/updatelumen/', 'SelectDataController@update');
 $router->post('/insertlumen', 'SelectDataController@insert');

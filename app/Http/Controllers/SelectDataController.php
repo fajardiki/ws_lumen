@@ -13,7 +13,7 @@ class SelectDataController extends Controller {
 	
 
 	// SELECT DATA
-	public function bridgelog($limit)	{
+	public function select($limit)	{
 
 		$this->startTimer();
 
