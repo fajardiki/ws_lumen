@@ -38,7 +38,7 @@ class SelectDataController extends Controller {
 			'result'=>'succes',
 			'Bridge_Log'=>$item,
 			'request'=>$i,
-			'time'=>$this->endTimer()." Second",
+			'time'=>$this->endTimer()." Sec",
 			'memory'=>$this->memory().' MB',
 			'cpu'=>$this->get_cpu_usage()."%"	
 		]);
@@ -53,7 +53,7 @@ class SelectDataController extends Controller {
 		return response()->json([
 			'result'=>'succes',
 			'Bridge_Log'=>$search,
-			'time'=>$this->endTimer()." Second",
+			'time'=>$this->endTimer()." Sec",
 			'memory'=>$this->memory().' MB',
 			'cpu'=>$this->get_cpu_usage()."%"
 		]);
@@ -85,7 +85,7 @@ class SelectDataController extends Controller {
 			return response()->json([
 				'result'=>'succes',
 				'request'=>$i,
-				'time'=>$this->endTimer()." Second",
+				'time'=>$this->endTimer()." Sec",
 				'memory'=>$this->memory().' MB',
 				'cpu'=>$this->get_cpu_usage()."%"
 			]);
@@ -124,7 +124,7 @@ class SelectDataController extends Controller {
 			return response()->json([
 				'result'=>'succes',
 				'request'=>$i,
-				'time'=>$this->endTimer()." Second",
+				'time'=>$this->endTimer()." Sec",
 				'memory'=>$this->memory().' MB',
 				'cpu'=>$this->get_cpu_usage()."%"
 			]);
@@ -156,7 +156,7 @@ class SelectDataController extends Controller {
 			return response()->json([
 				'result'=>'succes',
 				'request'=>$i,
-				'time'=>$this->endTimer()." Second",
+				'time'=>$this->endTimer()." Sec",
 				'memory'=>$this->memory().' MB',
 				'cpu'=>$this->get_cpu_usage()."%"
 			]);
